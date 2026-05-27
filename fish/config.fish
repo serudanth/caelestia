@@ -6,6 +6,9 @@ if status is-interactive
     command -v direnv &> /dev/null && direnv hook fish | source
     command -v zoxide &> /dev/null && zoxide init fish --cmd cd | source
 
+    # Dotfiles bare repo
+    alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
     # Better ls
     alias ls='eza --icons --group-directories-first -1'
 
@@ -35,11 +38,30 @@ if status is-interactive
     # Custom colours
     cat ~/.local/state/caelestia/sequences.txt 2> /dev/null
 
+    # Fowl-Custom-Function
+    function ollauncher --description "Launch Ollama with parameters"
+        set -x OLLAMA_MODELS /media/Zodiark/Git/LLM/ollama-models 
+        set -x OLLAMA_HOST 0.0.0.0:11434 
+        set -x OLLAMA_DEBUG 1 
+        set -x HIP_VISIBLE_DEVICES 0 
+        set -x HSA_OVERRIDE_GFX_VERSION 11.0.0 
+        ollama serve
+    end
+
     # For jumping between prompts in foot terminal
     function mark_prompt_start --on-event fish_prompt
         echo -en "\e]133;A\e\\"
     end
-    
+
     # Custom fish config
     source ~/.config/caelestia/user-config.fish 2> /dev/null
+
+    # Set PATH to include user's private bin if it exists
+    if test -d "$HOME/.local/bin"
+        set -gx PATH "$HOME/.local/bin" $PATH
+    end
+
 end
+
+fish_add_path /home/richterfowl/.spicetify
+fish_add_path ~/.npm-global/bin
